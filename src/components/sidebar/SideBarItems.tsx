@@ -15,12 +15,21 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { sideBarData } from "@/components/sidebar/data-access/sideBar.data";
+import { NavLink } from "react-router-dom";
 
 const SideBarItems = () => {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Opciones</SidebarGroupLabel>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuSubButton asChild>
+            <NavLink to={sideBarData.goDashboard.url}>
+              {sideBarData.goDashboard.icon && <sideBarData.goDashboard.icon />}
+              <span>{sideBarData.goDashboard.title}</span>
+            </NavLink>
+          </SidebarMenuSubButton>
+        </SidebarMenuItem>
         {sideBarData.navMain.map((item) => (
           <Collapsible
             key={item.title}
@@ -40,21 +49,21 @@ const SideBarItems = () => {
                 </SidebarMenuButton>
               </CollapsibleTrigger>
 
-              {item.items?.length !== 0 && (
+              {
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
+                          <NavLink to={subItem.url}>
                             <span>{subItem.title}</span>
-                          </a>
+                          </NavLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
                   </SidebarMenuSub>
                 </CollapsibleContent>
-              )}
+              }
             </SidebarMenuItem>
           </Collapsible>
         ))}

@@ -21,31 +21,19 @@ export const sideBarData = {
     plan: "Empresa",
   },
 
+  goDashboard: {
+    title: "Dashboard",
+    url: "/",
+    icon: LayoutDashboard,
+  },
+
   navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-      isActive: true,
-      items: [
-        // {
-        //   title: "History",
-        //   url: "#",
-        // },
-        // {
-        //   title: "Starred",
-        //   url: "#",
-        // },
-        // {
-        //   title: "Settings",
-        //   url: "#",
-        // },
-      ],
-    },
     {
       title: "Procesos",
       url: "#",
       icon: Bot,
+      isActive: false,
+
       items: [
         {
           title: "Venta de boletos",
@@ -114,7 +102,7 @@ export const sideBarData = {
         },
         {
           title: "Registro personal",
-          url: "#",
+          url: "/registro-personal",
         },
       ],
     },

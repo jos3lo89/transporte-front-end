@@ -19,12 +19,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import axios from "@/api/axios";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { useAuthStore } from "@/store/auth.store";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  usuario: z.string().min(1, { message: "El usuario no puede estar vacío" }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long" }),
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -33,22 +38,70 @@ const Login = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      usuario: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Login attempt with:", data);
+  const { setToken, login } = useAuthStore();
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const res = await axios.post("/auth/login", {
+        usuario: data.usuario,
+        clave: data.password,
+      });
+
+      login({
+        id: res.data.id,
+        name: res.data.nombres,
+        email: res.data.email,
+        foto_rul: res.data.foto_url,
+        role: res.data.rol,
+      });
+      setToken(res.data.token);
+      form.reset();
+      navigate("/");
+      toast.success(`Vienvenido ${res.data.nombres}`, {
+        duration: 2000,
+        position: "top-center",
+        richColors: true,
+        dismissible: true,
+        action: {
+          label: "Cerrar",
+          onClick: () => {
+            toast.dismiss();
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.warning(error.response?.data.message, {
+          duration: 2000,
+          position: "bottom-center",
+          richColors: true,
+          dismissible: true,
+          action: {
+            label: "Cerrar",
+            onClick: () => {
+              toast.dismiss();
+            },
+          },
+        });
+      } else {
+        console.log(error);
+      }
+    }
   };
 
   return (
     <main className="min-h-screen flex items-center justify-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle>Iniciar sesión</CardTitle>
           <CardDescription>
-            Enter your credentials to access your account.
+            Ingrese sus credenciales para acceder a su cuenta.
           </CardDescription>
         </CardHeader>
         <Form {...form}>
@@ -57,12 +110,12 @@ const Login = () => {
               <div className="grid w-full items-center gap-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="usuario"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Usuario</FormLabel>
                       <FormControl>
-                        <Input placeholder="name@example.com" {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -73,7 +126,7 @@ const Login = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Contraseña</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -85,7 +138,7 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-full">
-                Login
+                Ingresar
               </Button>
             </CardFooter>
           </form>
