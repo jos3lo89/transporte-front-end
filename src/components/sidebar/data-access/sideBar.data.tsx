@@ -35,21 +35,22 @@ export const sideBarData = {
       isActive: false,
 
       items: [
+        // {
+        //   title: "Venta de boletos",
+        //   url: "/venta-boletos",
+        // },
+        // {
+        //   title: "Encomiendas",
+        //   url: "#",
+        // },
+        // {
+        //   title: "Consultar encomienda",
+        //   url: "#",
+        // },
+
         {
-          title: "Venta de boletos",
-          url: "#",
-        },
-        {
-          title: "Encomiendas",
-          url: "#",
-        },
-        {
-          title: "Consultar encomienda",
-          url: "#",
-        },
-        {
-          title: "Crear ruta",
-          url: "#",
+          title: "Hora de salida",
+          url: "/hora-salida",
         },
       ],
     },
@@ -59,50 +60,71 @@ export const sideBarData = {
       icon: BookOpen,
       items: [
         {
-          title: "Registrar vehículos",
-          url: "#",
+          title: "Registrar conductores",
+          url: "/registro-conductores",
         },
         {
-          title: "Asignar vehiculo",
-          url: "#",
+          title: "Registrar vehículos",
+          url: "/registro-vehiculo",
         },
+        // {
+        //   title: "Asignar vehiculo",
+        //   url: "#",
+        // },
         {
           title: "Rutas y paradas",
-          url: "#",
+          url: "/rutas-paradas",
         },
         {
-          title: "Registrar serie de boletos",
-          url: "#",
+          title: "Registro personal",
+          url: "/registro-personal",
         },
+        // {
+        //   title: "Registrar serie de boletos",
+        //   url: "#",
+        // },
       ],
     },
-    {
-      title: "Reportes",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Boletos",
-          url: "#",
-        },
-        {
-          title: "Saldo",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Reportes",
+    //   url: "#",
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: "Boletos",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Saldo",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
     {
       title: "Administrador",
       url: "#",
       icon: Settings2,
       items: [
+        // {
+        //   title: "Roles y permisos",
+        //   url: "#",
+        // },
+
         {
-          title: "Roles y permisos",
-          url: "#",
+          title: "Listar empleados",
+          url: "/lista-empleados",
         },
         {
-          title: "Registro personal",
-          url: "/registro-personal",
+          title: "Crear Rutas",
+          url: "/crear-rutas",
+        },
+        {
+          title: "Crear Terminales",
+          url: "/crear-terminales",
+        },
+        {
+          title: "Crear viaje",
+          url: "/crear-viaje",
         },
       ],
     },

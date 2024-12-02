@@ -20,3 +20,12 @@ export interface AuthLogin {
   updatedAt: string
   token: string
 }
+
+
+
+export interface TerminalesApi {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  ciudad: string;
+}

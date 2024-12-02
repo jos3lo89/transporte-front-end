@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserPen } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/auth.store";
+import { Link } from "react-router-dom";
 const SideBarFooter = () => {
   const { user, logout, deleteStore } = useAuthStore();
 
@@ -66,6 +67,12 @@ const SideBarFooter = () => {
               <DropdownMenuItem onClick={logOut}>
                 <LogOut />
                 Cerrar sesión
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <UserPen />
+                <Link to={"/profile"} className="min-w-full">
+                  Mi perfil
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

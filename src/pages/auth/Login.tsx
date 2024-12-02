@@ -99,7 +99,7 @@ const Login = () => {
     <main className="min-h-screen flex items-center justify-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Iniciar sesión</CardTitle>
+          <CardTitle className="text-center">Iniciar sesión</CardTitle>
           <CardDescription>
             Ingrese sus credenciales para acceder a su cuenta.
           </CardDescription>
