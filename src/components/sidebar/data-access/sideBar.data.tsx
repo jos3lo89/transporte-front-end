@@ -1,20 +1,6 @@
-import {
-  BookOpen,
-  Bot,
-  Bus,
-  Frame,
-  LayoutDashboard,
-  Map,
-  PieChart,
-  Settings2,
-} from "lucide-react";
+import { BookOpen, Bot, Bus, LayoutDashboard, Settings2 } from "lucide-react";
 
 export const sideBarData = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   empresa: {
     name: "El Apurimeño",
     logo: Bus,
@@ -30,33 +16,27 @@ export const sideBarData = {
   navMain: [
     {
       title: "Procesos",
-      url: "#",
+      url: "/procesos",
       icon: Bot,
       isActive: false,
-
       items: [
-        // {
-        //   title: "Venta de boletos",
-        //   url: "/venta-boletos",
-        // },
-        // {
-        //   title: "Encomiendas",
-        //   url: "#",
-        // },
-        // {
-        //   title: "Consultar encomienda",
-        //   url: "#",
-        // },
-
         {
           title: "Hora de salida",
           url: "/hora-salida",
+        },
+        {
+          title: "Registrar encomienda",
+          url: "/registro-encomienda",
+        },
+        {
+          title: "Seguimiento encomienda",
+          url: "/seguimiento-encomienda",
         },
       ],
     },
     {
       title: "Registros",
-      url: "#",
+      url: "/registros",
       icon: BookOpen,
       items: [
         {
@@ -67,56 +47,24 @@ export const sideBarData = {
           title: "Registrar vehículos",
           url: "/registro-vehiculo",
         },
-        // {
-        //   title: "Asignar vehiculo",
-        //   url: "#",
-        // },
         {
-          title: "Rutas y paradas",
-          url: "/rutas-paradas",
-        },
-        {
-          title: "Registro personal",
+          title: "Registrar personal",
           url: "/registro-personal",
         },
-        // {
-        //   title: "Registrar serie de boletos",
-        //   url: "#",
-        // },
+        {
+          title: "Registrar Rutas",
+          url: "/crear-rutas",
+        },
       ],
     },
-    // {
-    //   title: "Reportes",
-    //   url: "#",
-    //   icon: Settings2,
-    //   items: [
-    //     {
-    //       title: "Boletos",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Saldo",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
     {
       title: "Administrador",
-      url: "#",
+      url: "/administrador", // Cambiar para que no sea #
       icon: Settings2,
       items: [
-        // {
-        //   title: "Roles y permisos",
-        //   url: "#",
-        // },
-
         {
-          title: "Listar empleados",
+          title: "Listar personal",
           url: "/lista-empleados",
-        },
-        {
-          title: "Crear Rutas",
-          url: "/crear-rutas",
         },
         {
           title: "Crear Terminales",
@@ -127,23 +75,6 @@ export const sideBarData = {
           url: "/crear-viaje",
         },
       ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 };

@@ -40,7 +40,7 @@ const HoraSalida = () => {
           placeholder="Search by date"
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
-          className="max-w-xs"
+          className="max-w-xs bg-secondary "
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -61,7 +61,8 @@ const HoraSalida = () => {
                 <span className="font-bold text-lg">S/ {trip.precio}</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">
-                {trip.ruta.origen.ciudad} <MoveRight className="inline mr-2 text-gray-500" />
+                {trip.ruta.origen.ciudad}{" "}
+                <MoveRight className="inline mr-2 text-gray-500" />
                 {trip.ruta.destino.ciudad}
               </h3>
               <p className="text-sm text-gray-500 mb-2">

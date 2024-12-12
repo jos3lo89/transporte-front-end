@@ -1,4 +1,9 @@
 import { z } from "zod";
+export enum Role {
+  GERENTE = "GERENTE",
+  BOLETERO = "BOLETERO",
+  ENCOMENDERO = "ENCOMENDERO",
+}
 
 export const MAX_FILE_SIZE = 2 * 1024 * 1024;
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -19,7 +24,7 @@ export const formSchema = z.object({
   }),
   email: z.string().email({ message: "Email inválido" }),
   direccion_domicilio: z.string(),
-  rol: z.enum(["VENDEDOR", "ADMINISTRADOR"]),
+  rol: z.enum(["GERENTE", "BOLETERO", "ENCOMENDERO"]),
   terminal_id: z.string(),
   file: z
     .instanceof(FileList)

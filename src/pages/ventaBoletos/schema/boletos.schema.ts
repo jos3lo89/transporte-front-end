@@ -19,6 +19,11 @@ export const formSchemaBoleto = z.object({
   destino: z.string(),
   origen: z.string(),
   // destino: z.enum(["Andahuaylas", "Abancay", "Ayacucho"]),
+  descripcion_equipaje: z.string().optional(),
+  peso_equipaje: z.preprocess(
+    (value) => (value !== "" ? Number(value) : undefined),
+    z.number().min(1, "El número debe ser mayor que 0")
+  ),
 });
 
 export type FormTypeBoleto = z.infer<typeof formSchemaBoleto>;

@@ -1,50 +1,61 @@
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { Activity, CreditCard, DollarSign, Users } from "lucide-react";
+import api from "@/api/axios";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bus, DollarSign, Package, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export interface AllDataI {
+  gananciaTotalViaje: number;
+  gananciaTotalEncomienda: number;
+  cantidadDeViajes: number;
+  cantidadEncomiendas: number;
+  cantidadVehiculos: number;
+  cantidadPersonal: number;
+}
+
 const Dashboard = () => {
-  const data = [
-    {
-      name: "Ene",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Feb",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Mar",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Abr",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "May",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-    {
-      name: "Jun",
-      total: Math.floor(Math.random() * 5000) + 1000,
-    },
-  ];
+  const [allData, setAllData] = useState<AllDataI | null>(null);
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  const getAllData = async () => {
+    try {
+      const res = await api.get("/dashboard");
+      console.log(res.data);
+      setAllData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const data = [
+  //   {
+  //     name: "Ene",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  //   {
+  //     name: "Feb",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  //   {
+  //     name: "Mar",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  //   {
+  //     name: "Abr",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  //   {
+  //     name: "May",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  //   {
+  //     name: "Jun",
+  //     total: Math.floor(Math.random() * 5000) + 1000,
+  //   },
+  // ];
 
   return (
     <div className="flex-col md:flex">
@@ -52,65 +63,116 @@ const Dashboard = () => {
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="flex items-center space-x-2">
-            <Button>Descargar</Button>
+            {/* <Button>Descargar</Button> */}
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Ingresos Totales
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
+
+        {allData && (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Ingresos Totales Por Viajes
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  S/ {allData.gananciaTotalViaje}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
                 +20.1% desde el mes pasado
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Suscripciones
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
-              <p className="text-xs text-muted-foreground">
-                +180.1% desde el mes pasado
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Ventas</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground">
-                +19% desde el mes pasado
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Clientes Activos
-              </CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">
-                +201 desde el mes pasado
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+              </p> */}
+              </CardContent>
+            </Card>
+
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Ingresos Totales por Encomiendas
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  S/ {allData.gananciaTotalEncomienda}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
+                  +19% desde el mes pasado
+                </p> */}
+              </CardContent>
+            </Card>
+
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Cantidad de pasajeros
+                </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {allData.cantidadDeViajes}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
+                  +201 desde el mes pasado
+                </p> */}
+              </CardContent>
+            </Card>
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Cantidad de encomiendas
+                </CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {allData.cantidadEncomiendas}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
+                  +201 desde el mes pasado
+                </p> */}
+              </CardContent>
+            </Card>
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Cantidad de empleados
+                </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {allData.cantidadPersonal}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
+                  +201 desde el mes pasado
+                </p> */}
+              </CardContent>
+            </Card>
+            <Card className="hover:bg-secondary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Cantidad de vehiculos
+                </CardTitle>
+                {/* <Activity className="h-4 w-4 text-muted-foreground" /> */}
+
+                <Bus className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {allData.cantidadVehiculos}
+                </div>
+                {/* <p className="text-xs text-muted-foreground">
+                  +201 desde el mes pasado
+                </p> */}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/*
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
           <Card className="col-span-4">
             <CardHeader>
@@ -192,6 +254,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+ */}
       </div>
     </div>
   );

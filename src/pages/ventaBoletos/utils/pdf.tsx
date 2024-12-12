@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
 });
 
 const companyDetails = {
-  name: "Transporte Andino S.A.",
-  address: "Av. Los Libertadores 1234, Andahuaylas",
-  contact: "Tel: 01-234-5678 | Email: contacto@transandino.com",
-  ruc: "20123456789",
+  name: "El Apurimeño S.A.",
+  address: "Av. Las Fresias 123, Andahuaylas",
+  contact: "Tel: 933234578 | Email: elapurimeño@gmail.com",
+  ruc: "201234567893",
 };
 
 type Props = { datosViaje: Ticket };

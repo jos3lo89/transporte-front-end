@@ -27,3 +27,15 @@ export const CrearRutasPage = lazy(
 export const CrearTerminalesPage = lazy(
   () => import("@/pages/crearTerminales/CrearTerminales")
 );
+
+export const RegistroEncomiendaPage = lazy(
+  () => import("@/pages/registroEncomienda/RegistroEncomiendaPage")
+);
+
+export const SeguimientoEncomiendaPage = lazy(
+  () => import("@/pages/seguimientoEncomienda/SeguimientoEcomiendaPage")
+);
+
+export const EncomiendaDetallesPage = lazy(
+  () => import("@/pages/encomiendaDetalles/EcomiendaDetallesPage")
+);

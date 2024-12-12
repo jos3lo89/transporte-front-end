@@ -5,14 +5,17 @@ import {
   CrearRutasPage,
   CrearTerminalesPage,
   CrearViaje,
+  EncomiendaDetallesPage,
   HoraSalida,
   ListaEmpleados,
   Login,
   ProfilePage,
   RegistrarVehiculo,
   RegistroConductores,
+  RegistroEncomiendaPage,
   RegistroPersonal,
   RutasParadas,
+  SeguimientoEncomiendaPage,
   VentaBoletos,
 } from ".";
 import { Suspense } from "react";
@@ -30,7 +33,9 @@ const routes = createBrowserRouter([
         path: "/",
         element: (
           <AuthGuard>
-            <RoleGuard allowedRoles={[Roles.GERENTE, Roles.BOLETERO]}>
+            <RoleGuard
+              allowedRoles={[Roles.GERENTE, Roles.BOLETERO, Roles.ENCOMENDERO]}
+            >
               <Dashboard />
             </RoleGuard>
           </AuthGuard>
@@ -124,7 +129,7 @@ const routes = createBrowserRouter([
         path: "/venta-boletos/:idviaje",
         element: (
           <AuthGuard>
-            <RoleGuard allowedRoles={[Roles.GERENTE]}>
+            <RoleGuard allowedRoles={[Roles.GERENTE, Roles.BOLETERO]}>
               <Suspense fallback={<Loading />}>
                 <VentaBoletos />
               </Suspense>
@@ -163,6 +168,49 @@ const routes = createBrowserRouter([
             <RoleGuard allowedRoles={[Roles.GERENTE]}>
               <Suspense fallback={<Loading />}>
                 <CrearTerminalesPage />
+              </Suspense>
+            </RoleGuard>
+          </AuthGuard>
+        ),
+      },
+
+      {
+        path: "/seguimiento-encomienda",
+        element: (
+          <AuthGuard>
+            <RoleGuard
+              allowedRoles={[Roles.GERENTE, Roles.ENCOMENDERO, Roles.BOLETERO]}
+            >
+              <Suspense fallback={<Loading />}>
+                <SeguimientoEncomiendaPage />
+              </Suspense>
+            </RoleGuard>
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/registro-encomienda",
+        element: (
+          <AuthGuard>
+            <RoleGuard
+              allowedRoles={[Roles.GERENTE, Roles.ENCOMENDERO, Roles.BOLETERO]}
+            >
+              <Suspense fallback={<Loading />}>
+                <RegistroEncomiendaPage />
+              </Suspense>
+            </RoleGuard>
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "/ecomienda-detalles/:idEncomienda",
+        element: (
+          <AuthGuard>
+            <RoleGuard
+              allowedRoles={[Roles.GERENTE, Roles.ENCOMENDERO, Roles.BOLETERO]}
+            >
+              <Suspense fallback={<Loading />}>
+                <EncomiendaDetallesPage />
               </Suspense>
             </RoleGuard>
           </AuthGuard>

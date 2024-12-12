@@ -26,12 +26,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArmchairIcon } from "lucide-react";
+import { ArmchairIcon, Bus, Luggage, Plane, User } from "lucide-react";
 import { traerUsuario } from "@/utils/api-reniec";
 import PdfTicket from "./utils/pdf";
 import { pdf } from "@react-pdf/renderer";
 
 import { saveAs } from "file-saver";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { DetallesPajaveVendido } from "./schema/detalles.interface";
+import { Separator } from "@/components/ui/separator";
 
 const VentaBoletos = () => {
   const [viajeData, setViajeData] = useState<ViajeV2Api | null>(null);
@@ -39,6 +51,24 @@ const VentaBoletos = () => {
   const { idviaje } = useParams();
   const [aux, setAux] = useState<number | null>(null);
   const [reniecLoading, setReniecLoading] = useState(false);
+
+  // const [modalOpen, setModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [detallesPasajero, setDetallesPasajero] =
+    useState<DetallesPajaveVendido | null>(null);
+
+  const getDetelles = async (num: number) => {
+    try {
+      const res = await axios.get(`/pasajeros/detalles/${num}/${idviaje}`);
+      console.log(res);
+      setDetallesPasajero(res.data);
+      // setModalOpen(true); // Abrir el modal
+      setIsOpen(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const form = useForm<FormTypeBoleto>({
     resolver: zodResolver(formSchemaBoleto),
@@ -50,6 +80,8 @@ const VentaBoletos = () => {
       num_asiento: 0,
       destino: "",
       origen: "",
+      descripcion_equipaje: "",
+      peso_equipaje: 1,
     },
   });
 
@@ -70,9 +102,7 @@ const VentaBoletos = () => {
       const res = await axios.get(`/viajes/${id}`);
       setViajeData(res.data);
 
-      // form.setValue("destino", viajeData?.ruta.destino.ciudad);
       form.setValue("destino", res.data.ruta.destino.ciudad);
-      // form.setValue("origen", viajeData?.ruta.origen.ciudad);
       form.setValue("origen", res.data.ruta.origen.ciudad);
 
       setAux(res.data.vehiculo.total_asientos);
@@ -141,6 +171,19 @@ const VentaBoletos = () => {
     form.setValue("num_asiento", num);
   };
 
+  const regenerarPdf = async (data: any) => {
+    if (!viajeData || !idviaje) {
+      return;
+    }
+
+    await downloadPdf({
+      fechaSalida: new Date(viajeData.fecha).toLocaleDateString(),
+      horaSalida: new Date(viajeData.fecha).toLocaleTimeString(),
+      viaje_id: idviaje,
+      ...data,
+    });
+  };
+
   const onSubmit = async (data: FormTypeBoleto) => {
     try {
       const newData = {
@@ -176,7 +219,6 @@ const VentaBoletos = () => {
         const asientosActualizados = await traerAsientoPorIdViaje(idviaje, aux);
         setNumasientocli(asientosActualizados);
 
-        // Establecer el primer asiento disponible después de la venta
         const primerAsientoDisponible = asientosActualizados.find(
           (asiento) => !asiento.sold && !asiento.isDriver
         );
@@ -196,6 +238,8 @@ const VentaBoletos = () => {
         destino: form.getValues("destino"),
         origen: form.getValues("origen"),
         num_asiento: form.getValues("num_asiento"),
+        descripcion_equipaje: "",
+        peso_equipaje: 1,
       });
     } catch (error) {
       console.log(error);
@@ -277,21 +321,22 @@ const VentaBoletos = () => {
                       </FormItem>
                     )}
                   />
-                </div>
 
-                {form.getValues("tipo_documento") === "DNI" && (
-                  <div className="grid grid-cols-1">
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      type="button"
-                      disabled={reniecLoading}
-                      onClick={() => getUser(form.getValues("num_documento"))}
-                    >
-                      {reniecLoading ? "Buscando..." : "Pedir datos"}
-                    </Button>
-                  </div>
-                )}
+                  {form.getValues("tipo_documento") === "DNI" && (
+                    // <div className="grid grid-cols-1">
+                    <div className="">
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        type="button"
+                        disabled={reniecLoading}
+                        onClick={() => getUser(form.getValues("num_documento"))}
+                      >
+                        {reniecLoading ? "Buscando..." : "Pedir datos"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
 
                 <div className="grid grid-cols-2 gap-6">
                   <FormField
@@ -377,6 +422,43 @@ const VentaBoletos = () => {
                   )}
                 </div>
 
+                <div className="grid grid-cols-1 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="descripcion_equipaje"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descripción del equipaje</FormLabel>
+                        <FormControl>
+                          {/* <Input placeholder="Descripción del equipaje" {...field} /> */}
+                          <Textarea
+                            placeholder="Descripción del equipaje."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="peso_equipaje"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Peso en kilos</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ingrese el peso del equipaje"
+                            {...field}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <Button type="submit" className="w-full">
                   Registrar Venta
                 </Button>
@@ -385,35 +467,169 @@ const VentaBoletos = () => {
           </CardContent>
         </Card>
       </div>
-      <Card className="container p-6 max-w-4xl mx-auto">
+      <Card className="container p-6 max-w-4xl mx-auto mb-10">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {numasientocli &&
             numasientocli.map((seat) => (
-              <Button
-                key={seat.id}
-                variant={
-                  seat.isDriver
-                    ? "secondary"
-                    : seat.sold
-                    ? "destructive"
-                    : "default"
-                }
-                className={`w-full h-24 flex flex-col items-center justify-center transition-all duration-300 ${
-                  seat.isDriver
-                    ? "cursor-not-allowed opacity-50"
-                    : "hover:scale-105"
-                }`}
-                onClick={() => handleChangenumAsiento(seat.id)}
-                disabled={seat.isDriver || seat.sold}
-              >
-                <ArmchairIcon />
-                <p className="text-xl font-bold">{seat.id}</p>
-              </Button>
+              <div key={seat.id}>
+                {seat.isDriver ? (
+                  // Botón deshabilitado para el asiento de conductor
+                  <Button
+                    variant="secondary"
+                    className="w-full h-24 flex flex-col items-center justify-center opacity-50 cursor-not-allowed"
+                    disabled
+                  >
+                    <ArmchairIcon />
+                    {seat.id}
+                  </Button>
+                ) : seat.sold ? (
+                  // Botón para asiento vendido
+                  <Button
+                    onClick={() => getDetelles(seat.id)}
+                    variant="destructive"
+                    className="w-full h-24 flex flex-col items-center justify-center"
+                  >
+                    <ArmchairIcon />
+                    {seat.id}
+                  </Button>
+                ) : (
+                  // Botón para asiento disponible
+                  <Button
+                    onClick={() => handleChangenumAsiento(seat.id)}
+                    variant="default"
+                    className="w-full h-24 flex flex-col items-center justify-center hover:scale-105"
+                  >
+                    <ArmchairIcon />
+                    {seat.id}
+                  </Button>
+                )}
+              </div>
             ))}
         </div>
       </Card>
 
-      {/* <Button onClick={() => downloadPdf()}>descregar pdf</Button> */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button className="hidden" variant="outline">
+            Ver Detalles del Pasajero
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Detalles del Pasajero</DialogTitle>
+            <DialogDescription>
+              Información detallada sobre el pasajero y su viaje
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="mt-4 h-[60vh] pr-4">
+            {detallesPasajero && (
+              <div className="space-y-6">
+                <div className="bg-muted p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg flex items-center gap-2 mb-3">
+                    <User className="h-5 w-5" />
+                    Pasajero
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-sm">
+                      <span className="font-medium">Nombre:</span>{" "}
+                      {detallesPasajero.pasajero.nombres}{" "}
+                      {detallesPasajero.pasajero.apellidos}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Documento:</span>{" "}
+                      {detallesPasajero.pasajero.tipo_documento} -{" "}
+                      {detallesPasajero.pasajero.num_documento}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Asiento:</span>{" "}
+                      {detallesPasajero.num_asiento}
+                    </p>
+                  </div>
+                </div>
+                <Separator />
+                <div className="bg-muted p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg flex items-center gap-2 mb-3">
+                    <Bus className="h-5 w-5" />
+                    Viaje
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-sm">
+                      <span className="font-medium">Fecha:</span>{" "}
+                      {new Date(detallesPasajero.viaje.fecha).toLocaleString()}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Precio:</span> $
+                      {detallesPasajero.viaje.precio}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Origen:</span>{" "}
+                      {detallesPasajero.viaje.ruta.origen.ciudad}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Destino:</span>{" "}
+                      {detallesPasajero.viaje.ruta.destino.ciudad}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Duración:</span>{" "}
+                      {detallesPasajero.viaje.ruta.duracion} minutos
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Distancia:</span>{" "}
+                      {detallesPasajero.viaje.ruta.distancia_km} km
+                    </p>
+                  </div>
+                </div>
+                <Separator />
+                <div className="bg-muted p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg flex items-center gap-2 mb-3">
+                    <Luggage className="h-5 w-5" />
+                    Equipaje
+                  </h3>
+                  {detallesPasajero.pasajero.equipaje.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className="mt-2 bg-background p-2 rounded"
+                    >
+                      <p className="text-sm">
+                        <span className="font-medium">
+                          Equipaje {index + 1}:
+                        </span>{" "}
+                        {item.descripcion}
+                      </p>
+                      <p className="text-sm">
+                        <span className="font-medium">Peso:</span>{" "}
+                        {item.peso_kilo} kg
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-center items-center ">
+                  <Button
+                    onClick={() =>
+                      regenerarPdf({
+                        nombres: detallesPasajero.pasajero.nombres,
+                        apellidos: detallesPasajero.pasajero.apellidos,
+                        tipo_documento:
+                          detallesPasajero.pasajero.tipo_documento,
+                        num_documento: detallesPasajero.pasajero.num_documento,
+                        num_asiento: detallesPasajero.num_asiento,
+                        destino: detallesPasajero.viaje.ruta.destino.ciudad,
+                        origen: detallesPasajero.viaje.ruta.origen.ciudad,
+                        descripcion_equipaje:
+                          detallesPasajero.pasajero.equipaje[0].descripcion,
+                        peso_equipaje:
+                          detallesPasajero.pasajero.equipaje[0].peso_kilo,
+                      })
+                    }
+                  >
+                    Regenerar ticket
+                  </Button>
+                </div>
+              </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -69,7 +69,7 @@ const RegistroPersonal = () => {
       celular: "",
       email: "",
       direccion_domicilio: "",
-      rol: "VENDEDOR",
+      rol: "GERENTE",
       terminal_id: "",
     },
   });
@@ -390,9 +390,10 @@ const RegistroPersonal = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="VENDEDOR">Vendedor</SelectItem>
-                            <SelectItem value="ADMINISTRADOR">
-                              Administrador
+                            <SelectItem value="GERENTE">Gerente</SelectItem>
+                            <SelectItem value="BOLETERO"> Boletero </SelectItem>
+                            <SelectItem value="ENCOMENDERO">
+                              Encomendero
                             </SelectItem>
                           </SelectContent>
                         </Select>
